@@ -11,33 +11,24 @@ class MyFloat(eBits: Int = 1, mBits: Int = 1) extends Bundle {
     new MyFloat(eBits, mBits).asInstanceOf[this.type]
 }
 
-//class Foo(eBits: Int = 1, mBits: Int = 1) extends Module {
-//  val btype = Wire(new MyFloat(eBits, mBits))
-//  btype := DontCare
-//  val io = IO(new Bundle {
-//    val a = Input(chiselTypeOf(btype))
-//    val x = Output(new MyFloat(eBits, mBits))
-//    val y = Output(chiselTypeOf(btype))
-//  })
-//  val r = Reg(new MyFloat(eBits, mBits))
-//
-//  // x (bulk connection)
-//  r <> io.a
-//  io.x <> r
-//
-//  // y (port-to-port)
-//  io.y.sign := r.sign
-//  io.y.exponent := r.exponent
-//  io.y.mantissa := r.mantissa & "h_f".U
-//}
-
 class Foo(eBits: Int = 1, mBits: Int = 1) extends Module {
+  val btype = Wire(new MyFloat(eBits, mBits))
+  btype := DontCare
   val io = IO(new Bundle {
-    val a = Input(Bool())
-    val b = Input(Bool())
-    val y = Output(Bool())
+    val a = Input(chiselTypeOf(btype))
+    val x = Output(new MyFloat(eBits, mBits))
+    val y = Output(chiselTypeOf(btype))
   })
-  io.y := io.a & io.b
+  val r = Reg(new MyFloat(eBits, mBits))
+
+  // x (bulk connection)
+  r <> io.a
+  io.x <> r
+
+  // y (port-to-port)
+  io.y.sign := r.sign
+  io.y.exponent := r.exponent & "h_f".U
+  io.y.mantissa := r.mantissa
 }
 
 object Elaborate extends App {

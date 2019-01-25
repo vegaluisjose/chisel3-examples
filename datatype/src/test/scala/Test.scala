@@ -6,18 +6,23 @@ import chisel3.experimental.{RawModule, withClockAndReset}
 
 import example._
 
-class DataGen extends Module {
+class DataGen(eBits: Int = 1, mBits: Int = 1) extends Module {
   val io = IO(new Bundle {
-    val a = Output(Bool())
-    val b = Output(Bool())
-    val y = Input(Bool())
+    val a = Output(new MyFloat(eBits, mBits))
+    val x = Input(new MyFloat(eBits, mBits))
+    val y = Input(new MyFloat(eBits, mBits))
   })
 
-  val (cnt, _) = Counter(true.B, 1024)
+  val (cnt, _) = Counter(true.B, 256)
 
-  io.a := cnt === 5.U
-  io.b := cnt >= 3.U
-  when(io.y) {printf("\n\nY is true\n\n")}
+  io.a.sign := true.B
+  io.a.exponent := cnt
+  io.a.mantissa := 0.U
+
+  when(true.B) {
+    printf("\n[x] sign:%b exponent:%x mantissa:%x\n", io.x.sign, io.x.exponent, io.x.mantissa)
+    printf("[y] sign:%b exponent:%x mantissa:%x\n", io.y.sign, io.y.exponent, io.y.mantissa)
+  }
 }
 
 class Test extends RawModule {
@@ -26,27 +31,13 @@ class Test extends RawModule {
 
   val eBits = 8
   val mBits = 23
-  val gen = withClockAndReset(clock, reset) { Module(new DataGen) }
+  val gen = withClockAndReset(clock, reset) { Module(new DataGen(eBits, mBits)) }
   val foo = withClockAndReset(clock, reset) { Module(new Foo(eBits, mBits)) }
 
-  foo.io.a := gen.io.a
-  foo.io.b := gen.io.b
-  gen.io.y := foo.io.y
+  foo.io.a <> gen.io.a
+  gen.io.x <> foo.io.x
+  gen.io.y <> foo.io.y
 }
-
-//class Test extends Module {
-//  val io = IO(new Bundle{val i = Input(Bool())})
-//
-//  val eBits = 8
-//  val mBits = 23
-//  val foo = Module(new Foo(eBits, mBits))
-//
-//  foo.io.a.sign := true.B
-//  foo.io.a.exponent := "h_A".U
-//  foo.io.a.mantissa := "h_F".U
-//
-//  when(true.B) { printf("exp:%x\n", foo.io.x.exponent) }
-//}
 
 object Elaborate extends App {
   chisel3.Driver.execute(args, () => new Test)
