@@ -1,7 +1,7 @@
 tb_name = Test
 
 testbench_dir = $(abspath ..)/testbench
-resources_dir = $(abspath ..)/src/main/resources
+resources_dir = $(abspath ..)/src/test/resources
 vout_dir = $(abspath .)/vout
 
 vsrc_files = $(testbench_dir)/Test.v
