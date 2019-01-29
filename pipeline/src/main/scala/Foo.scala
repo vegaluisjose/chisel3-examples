@@ -25,20 +25,28 @@ class Foo(depth: Int = 1, eBits: Int = 1, mBits: Int = 1) extends Module {
     val in = Flipped(ValidIO(new MyFloat(eBits, mBits)))
     val out = ValidIO(new MyFloat(eBits, mBits))
   })
-  val b = Seq.tabulate(depth)(i => Module(new Bar(eBits, mBits)))
-  val pWire = Seq.tabulate(depth+1)(i => Wire(ValidIO(new MyFloat(eBits, mBits))))
+  val bar = Seq.tabulate(depth)(i => Module(new Bar(eBits, mBits)))
+  val wire = Seq.tabulate(depth+1)(i => Wire(ValidIO(new MyFloat(eBits, mBits))))
 
   // input
-  pWire(0) <> io.in
+  wire(0) <> io.in
 
   // pipeline
-  for (i <- 0 until depth) {
-    b(i).io.in <> pWire(i)
-    pWire(i+1) <> b(i).io.out
+  //
+  // Conventional way
+  // for (i <- 0 until depth) {
+  //   bar(i).io.in <> wire(i)
+  //   wire(i+1) <> bar(i).io.out
+  // }
+
+  // Another
+  bar.zipWithIndex.foreach { case(bar, i) =>
+    bar.io.in <> wire(i)
+    wire(i + 1) <> bar.io.out
   }
 
   // output
-  io.out <> pWire(depth)
+  io.out <> wire(depth)
 }
 
 object Elaborate extends App {
