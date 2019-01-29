@@ -4,9 +4,9 @@ import chisel3._
 import chisel3.util._
 
 class MyFloat(eBits: Int = 1, mBits: Int = 1) extends Bundle {
-  val sign = Input(Bool())
-  val exponent = Input(UInt(eBits.W))
-  val mantissa = Input(UInt(mBits.W))
+  val sign = Bool()
+  val exponent = UInt(eBits.W)
+  val mantissa = UInt(mBits.W)
   override def cloneType =
     new MyFloat(eBits, mBits).asInstanceOf[this.type]
 }
