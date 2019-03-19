@@ -1,10 +1,5 @@
 # Setup
 
-* Install Python
-```
-sudo apt install -y python
-```
-
 * Install sbt (Debian) [source](https://www.scala-sbt.org/release/docs/Installing-sbt-on-Linux.html)
 ```
 echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
@@ -24,20 +19,20 @@ sudo yum install sbt
 brew install sbt
 ```
 
-* Install [Verilator](https://www.veripool.org/wiki/verilator)
+* Install Verilator (OSX): `brew install verilator`
+* Install Verilator (Linux): `sudo apt install verilator`
+
+* Install [Verilator](https://www.veripool.org/wiki/verilator) from source
 ```
 sudo apt-get install git make autoconf g++ flex bison
 git clone http://git.veripool.org/git/verilator
 cd verilator
-git checkout v4.008 -b v4.008
+git checkout SOME_TAG_VERSION -b SOME_TAG_VERSION
 autoconf
 ./configure
 make
 sudo make install
 ```
-
-* OSX: `brew install verilator` (older versions)
-* Linux: `sudo apt install verilator` (older versions)
 
 * Sources:
 * [Installing Verilator official documentation](https://www.veripool.org/projects/verilator/wiki/Installing)
