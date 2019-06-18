@@ -37,3 +37,9 @@ sudo make install
 * Sources:
 * [Installing Verilator official documentation](https://www.veripool.org/projects/verilator/wiki/Installing)
 * [Verilator Manual](https://www.veripool.org/projects/verilator/wiki/Manual-verilator)
+
+# Examples
+
+* Go to the project example, i.e. `cd adder`
+* Run simulation, i.e. `make -C sim`
+* Generate Verilog, i.e. `make`
