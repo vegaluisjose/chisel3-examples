@@ -2,7 +2,6 @@ package example.test
 
 import chisel3._
 import chisel3.util._
-import chisel3.experimental.{RawModule, withClockAndReset}
 
 import example._
 
@@ -34,16 +33,13 @@ class DataGen(eBits: Int = 1, mBits: Int = 1) extends Module {
   }
 }
 
-class Test extends RawModule {
-  val clock = IO(Input(Clock()))
-  val reset = IO(Input(Bool()))
-
+class Test extends Module {
+  val io = IO(new Bundle {})
   val depth = 8
   val eBits = 8
   val mBits = 23
-  val gen = withClockAndReset(clock, reset) { Module(new DataGen(eBits, mBits)) }
-  val foo = withClockAndReset(clock, reset) { Module(new Foo(depth, eBits, mBits)) }
-
+  val gen = Module(new DataGen(eBits, mBits))
+  val foo = Module(new Foo(depth, eBits, mBits))
   foo.io.in <> gen.io.out
   gen.io.in <> foo.io.out
 }
