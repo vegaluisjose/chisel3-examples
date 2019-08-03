@@ -15,8 +15,8 @@ class CMAC(stages: Int = 8, length: Int = 8, aBits: Int = 8, bBits: Int = 4) ext
     m(i) := io.a.bits(i) * io.b.bits(i)
   }
   val sum = m.reduce(_+&_)
-  io.y.valid := ShiftRegister(io.a.valid & io.b.valid, stages, io.a.valid & io.b.valid)
-  io.y.bits := ShiftRegister(sum, stages, io.a.valid & io.b.valid)
+  io.y.valid := ShiftRegister(io.a.valid & io.b.valid, stages)
+  io.y.bits := ShiftRegister(sum, stages)
 }
 
 object Elaborate extends App {
